@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?> 
+<addons>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="repository.BadWolf" name="BadWolf Repository" version="1.0.1" provider-name="Wardoctor">
+	<extension point="xbmc.addon.repository" name="BadWolf Repository">
+		<info compressed="false">https://raw.githubusercontent.com/TheWardoctor/BadWolf/master/addons.xml</info>
+		<checksum>https://raw.githubusercontent.com/TheWardoctor/BadWolf/master/addons.xml.md5</checksum>
+		<datadir zip="true">https://raw.githubusercontent.com/TheWardoctor/BadWolf/master/</datadir>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary>BadWolf Repository, don't like it? Go away, problem solved.</summary>
+		<description></description>
+		<disclaimer></disclaimer>
+		<platform>all</platform>
+	</extension>
+</addon>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.audio.booksshouldbefree" name="Loyal Books" version="1.0.9" provider-name="spoyser">
+  <requires>
+    <import addon="xbmc.python" version="2.1.14"/>
+  </requires>
+  
+  <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>audio</provides>
+  </extension>
+  
+  <extension point="xbmc.addon.metadata">
+    <summary>Loyal Books (formerly Books Should Be Free)</summary>
+    <description lang="en">Over 7000 free public domain audiobooks</description>
+     <platform>all</platform>
+     <language>en</language>
+     <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
+     <forum>http://forum.kodi.tv/showthread.php?tid=242478</forum>
+    <website>http://www.loyalbooks.com</website>
+  </extension>
+  
+</addon>
+
+</addons> 
