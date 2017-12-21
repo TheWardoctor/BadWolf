@@ -63,26 +63,28 @@ class filmapik(Scraper):
             print 'cfwd > '+item_url
             headers={'User-Agent':User_Agent}
             OPEN = requests.get(item_url,headers=headers,timeout=5).content
-            embFile = re.compile('<iframe.+?src="(.+?)"',re.DOTALL).findall(OPEN)[0]
-            #print 'embfile'+embFile
-            
-            headers={'User-Agent':User_Agent}
-            getlinks = requests.get(embFile,headers=headers,timeout=5).content
-            if 'sources:' in getlinks:
-                links = re.compile('"label":"(.+?)".+?"file":"(.+?)"',re.DOTALL).findall(getlinks)
-                for label,link in links:
-                    self.sources.append({'source': 'DirectLink', 'quality': label, 'scraper': self.name, 'url': link,'direct': True})
-            else:            
-                links = re.compile('iframe.+?src="(.+?)"',re.DOTALL).findall(getlinks)
-                for link in links:
-                    if 'streamango' in link:
-                        holder = requests.get(link).content
+            sources = re.compile("Onclick=\"loadPage.+?'(.+?)'",re.DOTALL).findall(OPEN)
+            for embFile in sources:
+                print embFile
+                if 'dbmovies' in embFile:
+                    headers={'User-Agent':User_Agent}
+                    getlinks = requests.get(embFile,headers=headers,timeout=5).content
+                    if 'sources:' in getlinks:
+                        links = re.compile('"label":"(.+?)".+?"file":"(.+?)"',re.DOTALL).findall(getlinks)
+                        for label,link in links:
+                            self.sources.append({'source': 'DirectLink', 'quality': label, 'scraper': self.name, 'url': link,'direct': True})
+                    else:pass
+                else:            
+                    if 'streamango' in embFile:
+                        holder = requests.get(embFile).content
                         qual = re.compile('type:"video/mp4".+?height:(.+?),',re.DOTALL).findall(holder)[0]
-                        self.sources.append({'source': 'Streamango', 'quality': qual, 'scraper': self.name, 'url': link,'direct': False})
+                        self.sources.append({'source': 'Streamango', 'quality': qual, 'scraper': self.name, 'url': embFile,'direct': False})
+                    elif 'drive.google' in embFile:
+                        self.sources.append({'source': 'GoogleLink', 'quality': '720p', 'scraper': self.name, 'url': embFile,'direct': False}) 
                     else:
-                        host = link.split('//')[1].replace('www.','')
+                        host = embFile.split('//')[1].replace('www.','')
                         host = host.split('/')[0].split('.')[0].title()
-                        self.sources.append({'source': host, 'quality': 'DVD', 'scraper': self.name, 'url': link,'direct': False})           
+                        self.sources.append({'source': host, 'quality': 'DVD', 'scraper': self.name, 'url': embFile,'direct': False})           
         except:
             pass
 

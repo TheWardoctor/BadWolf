@@ -24,10 +24,10 @@ class hollymoviehd(Scraper):
         try:
             search_id = clean_search(title.lower())
             start_url = '%s/?s=%s' %(self.base_link,search_id.replace(' ','+'))
-
-            headers={'User-Agent':User_Agent}
+            #print ':::::::::::::######################## '+start_url
+            headers={'User-Agent':User_Agent,'referer':self.base_link}
             html = requests.get(start_url,headers=headers,timeout=5).content
-
+            #print ':::::::::::::######################## '+html
             match = re.compile('data-movie-id=.+?href="(.+?)" .+?class="mli-info"><h2>(.+?)</h2>',re.DOTALL).findall(html)
             for item_url, name in match:
                 if year in name:
@@ -74,7 +74,7 @@ class hollymoviehd(Scraper):
             holder = re.compile('data-lazy-src="(.+?)"',re.DOTALL).findall(OPEN)[0]
             if holder.startswith('//'):
                 holder = 'https:' + holder
-            print 'embfile'+holder
+            #print 'embfile'+holder
             headers={'User-Agent':User_Agent}
             
             Page = requests.get(holder,headers=headers,timeout=5).content
@@ -88,7 +88,7 @@ class hollymoviehd(Scraper):
                     label = 'DVD'
                 else:
                     label = 'SD'
-                print 'endlink %s - %s'%(link,label)
+                #print 'HOLLYHEADendlink> %s - %s'%(link,label)
                 self.sources.append({'source': 'GoogleLink', 'quality': label, 'scraper': self.name, 'url': link,'direct': True})           
         except:
             pass

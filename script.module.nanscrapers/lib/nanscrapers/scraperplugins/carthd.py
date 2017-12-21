@@ -11,12 +11,12 @@ s = requests.session()
 User_Agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'
 
 class carthd(Scraper):
-    domains = ['https://cartoonhd.in']
+    domains = ['https://cartoonhd.life']
     name = "CartoonHD"
     sources = []
 
     def __init__(self):
-        self.base_link = 'https://cartoonhd.in'
+        self.base_link = 'https://cartoonhd.life'
         self.sources = []
 
     def scrape_movie(self, title, year, imdb, debrid=False):
@@ -61,7 +61,7 @@ class carthd(Scraper):
                                     'origin':self.base_link, 'referer':start_url, 'user-agent':User_Agent,
                                     'x-requested-with':'XMLHttpRequest'}
                         
-                        request_url = '%s/ajax/tnembedr.php' %self.base_link
+                        request_url = '%s/ajax/vsozrflxcw.php' %self.base_link
                         postdata={'action':'getMovieEmb','idEl':id,'token':token,'elid':TIME}
                         
                         links = requests.post(request_url, data=postdata,verify=False, headers=headers).content
@@ -143,7 +143,7 @@ class carthd(Scraper):
                                 'origin':self.base_link, 'referer':item_url, 'user-agent':User_Agent,
                                 'x-requested-with':'XMLHttpRequest'}
                         
-                    request_url = '%s/ajax/tnembedr.php' %self.base_link
+                    request_url = '%s/ajax/vsozrflxcw.php' %self.base_link
                     postdata={'action':'getEpisodeEmb','idEl':id,'token':token,'elid':TIME}
                         
                     links = requests.post(request_url, data=postdata,verify=False, headers=headers).content

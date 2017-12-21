@@ -5,12 +5,12 @@ import xbmc
 from ..scraper import Scraper
 
 class serieswatch(Scraper):
-    domains = ['watch-series.co']
+    domains = ['watch-series.io']
     name = "serieswatch"
     sources = []
 
     def __init__(self):
-        self.base_link = 'https://watch-series.co'
+        self.base_link = 'https://watch-series.io'
         self.search_link = '/search.html?keyword='
 
 

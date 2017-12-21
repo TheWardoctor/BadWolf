@@ -4,19 +4,19 @@ import xbmc
 import urllib
 from ..scraper import Scraper
 import urlparse
-
+from ..common import random_agent, clean_title, filter_host, clean_search
 #requests.packages.urllib3.disable_warnings()
 
 User_Agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'
 
 
 class thewatchseries(Scraper):
-    domains = ['http://watchseriesmovie.com']
-    name = "thewatchseries"
+    domains = ['http://watchseriesmovie.net']
+    name = "TheWatchSeries"
     sources = []
 
     def __init__(self):
-        self.base_link = 'http://watchseriesmovie.com'
+        self.base_link = 'http://watchseriesmovie.net'
         self.sources = []
 
     def scrape_movie(self, title, year, imdb, debrid=False):
@@ -25,18 +25,19 @@ class thewatchseries(Scraper):
             start_url = '%s/search.html?keyword=%s' %(self.base_link,scrape)
             #print 'SEARCH  > '+start_url
             headers = {'User_Agent':User_Agent}
-            html = requests.get(start_url, headers=headers,timeout=5,verify=False).content
+            html = requests.get(start_url, headers=headers,timeout=5).content
             thumbs = re.compile('<ul class="listing items">(.+?)</ul> ',re.DOTALL).findall(html)
             thumb = re.compile('href="(.+?)".+?alt="(.+?)"',re.DOTALL).findall(str(thumbs))  
             for link,link_title in thumb:
-                if title.lower() in link_title.lower():
-                    page_link = '%s/%s' %(self.base_link,link)
+                if clean_title(title).lower() == clean_title(link_title).lower():
+                    page_link = self.base_link+link
                     headers = {'User_Agent':User_Agent}
-                    holdpage = requests.get(page_link, headers=headers,timeout=5,verify=False).content
+                    holdpage = requests.get(page_link, headers=headers,timeout=5).content
                     datecheck = re.compile('<span>Release: </span>(.+?)</li>',re.DOTALL).findall(holdpage)[0]
                     if year in datecheck:
                         movie_link = re.compile('<li class="child_episode".+?href="(.+?)"',re.DOTALL).findall(holdpage)[0]
                         movie_link = self.base_link + movie_link
+                        #print 'GW >>>'+movie_link
                         self.get_source(movie_link)
                     else:pass
             return self.sources
@@ -47,20 +48,20 @@ class thewatchseries(Scraper):
         try:
             scrape = urllib.quote_plus(title.lower())
             start_url = '%s/search.html?keyword=%s' %(self.base_link,scrape)
-            print 'SEARCH  > '+start_url
+            #print 'SEARCH  > '+start_url
             headers = {'User_Agent':User_Agent}
-            html = requests.get(start_url, headers=headers,timeout=5,verify=False).content
+            html = requests.get(start_url, headers=headers,timeout=5).content
             thumbs = re.compile('<ul class="listing items">(.+?)</ul> ',re.DOTALL).findall(html)
             thumb = re.compile('href="(.+?)".+?alt="(.+?)"',re.DOTALL).findall(str(thumbs))  
             for link,link_title in thumb:
-                if title.lower() in link_title.lower():
+                if clean_title(title).lower() in clean_title(link_title).lower():
                     season_chk = '-season-%s' %season
                     #print 'season chk% '+season_chk
                     if season_chk in link:
                         page_link = self.base_link + link
                         #print 'page_link:::::::::::::: '+page_link
                         headers = {'User_Agent':User_Agent}
-                        holdpage = requests.get(page_link, headers=headers,timeout=5,verify=False).content
+                        holdpage = requests.get(page_link, headers=headers,timeout=5).content
                         series_links = re.compile('<li class="child_episode".+?href="(.+?)"',re.DOTALL).findall(holdpage)
                         for movie_link in series_links:
                             episode_chk = '-episode-%s' %episode
@@ -81,7 +82,7 @@ class thewatchseries(Scraper):
                 #print '::::::::::::::::::::::final link> ' + link
                 if 'vidnode.net' in link:
                     link = 'http:'+link
-                    page = open_url(link,timeout=3).content
+                    page = requests.get(link,timeout=3).content
                     vids = re.compile("<source rel.+?src='(.+?)'",re.DOTALL).findall(page)
                     for vid_url in vids:
                         if '=m18' in vid_url:
